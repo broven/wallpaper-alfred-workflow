@@ -60,15 +60,13 @@ def getBingImage():
         data = data.read()
         f.write(data)
     log(imgPath)
-    sys.stdout.write(imgPath)
-
+    return imgPath
 def randomChoose():
-    getBingImage()
     wallpapers = getDirectoryImageList(PATH)
     if len(wallpapers) == 0:
         return
     seed = random.randint(0, len(wallpapers)-1)
-    sys.stdout.write(wallpapers[seed])
+    return os.path.join(PATH, wallpapers[seed])
 
 def clean():
     wallpapers = getDirectoryImageList(PATH)
@@ -80,17 +78,30 @@ def garbage():
     os.remove(garbageImage)
     randomChoose()
 
-query = sys.argv[0]
-if query == 'list':
-    pass
-elif query == 'random':
-    randomChoose()
-elif query == 'clean':
-    clean()
-elif query == 'garbage':
-    garbage()
-else:
-    getBingImage()
+def output(func):
+    sys.stdout.write(func())
+
 
 if __name__ == '__main__':
-    getBingImage()
+    # getBingImage()
+    output(randomChoose)
+if __name__ != '__main__':
+    query = ''
+    if (len(sys.argv) == 2):
+        query = sys.argv[1]
+    else:
+        raise Exception('please give your argvs')
+    if query == 'list':
+        pass
+    elif query == 'random':
+        output(randomChoose)
+        getBingImage()
+    elif query == 'clean':
+        clean()
+    elif query == 'garbage':
+        garbage()
+    elif query == 'now':
+        output(getBingImage)
+    else:
+        raise Exception('please provide a argv!')
+
